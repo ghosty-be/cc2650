@@ -99,7 +99,13 @@ time.sleep(5)
 tval = read_hex(tool,'21')
 hval = read_hex(tool,'29')
 bval = read_hex(tool,'31')
-lval = read_hex(tool,'40')
+lval = read_hex(tool,'41')
+
+#light requires some complex bitshifting
+lumm = int(lval[1]+lval[0],16) & 0x0FFF
+lume = (int(lval[1]+lval[0],16) & 0xF000) >> 12
+lum = lumm * (0.01 * pow(2.0,lume))
+
 atc = float.fromhex(tval[3]+tval[2])/4*0.03125
 print "Ambient temperature: " + str('%.1f' % atc) + "C"
 itc = float.fromhex(tval[1]+tval[0])/4*0.03125
@@ -114,4 +120,4 @@ print "bar temperature: " + str('%.1f' % btc) + "C"
 bar = float.fromhex(bval[5]+bval[4]+bval[3])/100
 print "barometer: " + str('%.1f' % bar) + "mBar"
 # right now I don't know how to interpret this data so raw output
-print "light: " + str(lval)
+print "light: " + str('%.1f' % lum) + "Lux"
